@@ -17,8 +17,8 @@ from setuptools import find_packages, setup
 # Parse own args
 parser = argparse.ArgumentParser()
 parser.add_argument('--embedded', action='store_true')
-args, uknown_args = parser.parse_known_args()
-sys.argv = [sys.argv[0]] + uknown_args
+args, unknown_args = parser.parse_known_args()
+sys.argv = [sys.argv[0]] + unknown_args
 
 # Define parameters
 is_embedded = args.embedded
@@ -34,13 +34,13 @@ REQUIRES_PYTHON = '>=3.8.0'
 # What packages are required for this module to be executed?
 REQUIRED = [
     "jsonschema >=2.5.1,<3.0",
-    "PyQt5 >=5.13.2,<5.14",
+    "PyQt5 >=5.13.2",
     "python-dateutil >=2.6.0",
-    "pytz >=2020.1",
+    "pytz >= 2021.1",
     "requests >= 2.12.4,<3.0",
-    "sip >=5.1.1,<6.0",
-    "tzlocal >=1.3,<2.0",
-    "loguru >=0.3.0,<0.4.0"
+    "sip >=5.1.1",
+    "tzlocal >=2.1,<3.0",
+    "loguru >=0.5.0,<0.6.0",
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -75,6 +75,7 @@ setup(
     python_requires=REQUIRES_PYTHON,
     url=URL,
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+    include_package_data = True,
     install_requires=REQUIRED,
     entry_points=ENTRY_POINTS,
     license='GPLv3',

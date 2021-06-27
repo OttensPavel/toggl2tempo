@@ -31,14 +31,19 @@ def pushd(new_dir):
 app_name = "toggl2tempo"
 
 source_dir = Path("..")
-dist_dir = Path("../dist")
+
+env_dir = source_dir.joinpath("venv", "Scripts")
+python_path = str(env_dir.joinpath("python.exe").resolve())
+pip_path = str(env_dir.joinpath("pip.exe").resolve())
+
+dist_dir = source_dir.joinpath("dist")
 package_dir = dist_dir.joinpath("package")
 libs_dir = package_dir.joinpath("libs")
 
 python_embedded_version = "python38"
-python_embedded_file_name = "python-3.8.2-embed-amd64.zip"
-python_embedded_file_hashsum = "2927a3a6d0fe1f6e047a86059220aeda374eed23113b9ef5355acb8452d56453"
-python_embedded_url = "https://www.python.org/ftp/python/3.8.2/python-3.8.2-embed-amd64.zip"
+python_embedded_file_name = "python-3.8.10-embed-amd64.zip"
+python_embedded_file_hash_sum = "abbe314e9b41603dde0a823b76f5bbbe17b3de3e5ac4ef06b759da5466711271"
+python_embedded_url = "https://www.python.org/ftp/python/3.8.10/python-3.8.10-embed-amd64.zip"
 python_embedded_file_path = dist_dir.joinpath(python_embedded_file_name)
 
 # === Read version ===
@@ -63,8 +68,8 @@ print("Download Python Embedded dist package ...")
 if not python_embedded_file_path.exists():
     urllib.request.urlretrieve(python_embedded_url, python_embedded_file_path)
 
-# Check hashsum
-print("Check hashsum ...")
+# Check hash sum
+print("Check hash sum ...")
 h = hashlib.sha256()
 
 with python_embedded_file_path.open(mode="rb") as f:
@@ -77,10 +82,10 @@ with python_embedded_file_path.open(mode="rb") as f:
 
 h.digest()
 
-current_hashsum = h.hexdigest()
-if python_embedded_file_hashsum != current_hashsum:
-    raise Exception(f"Hashsum {current_hashsum} of downloaded '{python_embedded_file_name}' \
-      doesn't match with {python_embedded_file_hashsum}")
+current_hash_sum = h.hexdigest()
+if python_embedded_file_hash_sum != current_hash_sum:
+    raise Exception(f"Hash sum {current_hash_sum} of downloaded '{python_embedded_file_name}' \
+      doesn't match with expected {python_embedded_file_hash_sum}")
 
 # === Prepare Python embedded dist ===
 print("Prepare Python embedded dist ...")
@@ -118,7 +123,7 @@ import site
 # === Build wheel distribution package ===
 print("Build Wheel distribution packages ...")
 with pushd(source_dir):
-    bdist_process = subprocess.run(['python', 'setup.py', "sdist", "bdist_wheel", "--embedded"],
+    bdist_process = subprocess.run([python_path, 'setup.py', "sdist", "bdist_wheel", "--embedded"],
                                    stdout=subprocess.PIPE,
                                    universal_newlines=True)
     if bdist_process.returncode != 0:
@@ -127,7 +132,7 @@ with pushd(source_dir):
 # === Install application and requirements ===
 print("Install application and requirements ...")
 wheel_package_path = dist_dir.joinpath(f"toggl2tempo-{version}-py3-none-any.whl")
-pip_process = subprocess.run(['pip', 'install', "-t", libs_dir, wheel_package_path],
+pip_process = subprocess.run([pip_path, 'install', "-t", libs_dir, wheel_package_path],
                              stdout=subprocess.PIPE,
                              universal_newlines=True)
 if pip_process.returncode != 0:

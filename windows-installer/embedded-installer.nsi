@@ -8,7 +8,7 @@ Unicode true
 RequestExecutionLevel user
 
 InstallDir "$LOCALAPPDATA\${APPNAME}"
-LicenseData "..\license.txt"
+LicenseData "..\LICENSE"
 
 Name "${APPNAME} v${VERSION}"
 Icon "app-icon.ico"
