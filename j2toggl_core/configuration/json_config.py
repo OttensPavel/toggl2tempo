@@ -1,12 +1,13 @@
 import json
+from json import JSONDecodeError
 from pathlib import Path
 
 import jsonschema
-import os
 
+from jsonschema import ValidationError
 from loguru import logger
 
-from j2toggl_core.app_paths import get_user_file_path
+from j2toggl_core.app_paths import get_app_file_path, get_app_directory_path
 from j2toggl_core.configuration.config import Config
 
 CONFIG_FILE_NAME = "app-config.json"
@@ -51,27 +52,57 @@ class JsonConfig(Config):
         },
     }
 
-    def load(self):
-        appdata_directory_path = os.getenv('APPDATA')
-        if not appdata_directory_path:
-            raise IOError("Can't find APPDATA env variable")
+    def __init__(self, directory_path: Path = None):
+        super().__init__()
 
-        config_path = get_user_file_path(CONFIG_FILE_NAME)
+        if directory_path is not None:
+            self.config_path = Path(directory_path).joinpath(CONFIG_FILE_NAME)
+        else:
+            self.config_path = get_app_file_path(CONFIG_FILE_NAME)
+
+    def exists(self) -> bool:
+        return self.config_path.exists()
+
+    def validate(self) -> (bool, str):
+        logger.info(f"Validate JSON-config file '{self.config_path}'")
+
+        if not self.config_path.exists():
+            return False, f"File '{self.config_path}' does not exist"
+
+        if not self.config_path.is_file():
+            return False, f"Path '{self.config_path}' is not file"
+
+        # Load JSON from file
+        try:
+            with self.config_path.open() as config_file:
+                data = json.load(config_file)
+        except JSONDecodeError as e:
+            return False, f"Failed to read JSON config file: {e}"
+
+        # Validate by JSON schema
+        try:
+            jsonschema.validate(data, self._configSchema)
+        except ValidationError as e:
+            return False, f"JSON config is incorrect: {e.message}"
+
+        return True, None
+
+    def load(self):
+        config_path = get_app_file_path(CONFIG_FILE_NAME)
 
         logger.info(f"Load config from '{config_path}'")
 
         # Load config from file
+        data = None
         if config_path.exists() and config_path.is_file():
             with config_path.open() as config_file:
                 data = json.load(config_file)
-        else:
-            raise IOError("Can't find config file: {0}".format(config_path))
-
-        # Validate by JSON schema
-        jsonschema.validate(data, self._configSchema)
 
         # Load settings
         if data is not None:
+            # Validate by JSON schema
+            jsonschema.validate(data, self._configSchema)
+
             # Application settings
             self.first_date_of_week = data["application"]["firstDateOfWeek"]
 
@@ -86,3 +117,32 @@ class JsonConfig(Config):
             # Toggl settings
             self.toggl.token = data["toggl"]["token"]
             self.toggl.user_agent = data["toggl"]["user_agent"]
+
+    def save(self):
+        config_dir = get_app_directory_path()
+        config_dir.mkdir(exist_ok=True)
+
+        config_path = get_app_file_path(CONFIG_FILE_NAME)
+
+        logger.info(f"Save config to '{config_path}'")
+
+        data = {
+            "application": {
+                "firstDateOfWeek": self.first_date_of_week,
+            },
+            "jira": {
+                "host": self.jira.host,
+                "user": self.jira.user,
+                "token": self.jira.token
+            },
+            "tempo": {
+                "token": self.tempo.token,
+            },
+            "toggl": {
+                "user_agent": self.toggl.user_agent,
+                "token": self.toggl.token,
+            }
+        }
+
+        with config_path.open(mode="w") as config_file:
+            json.dump(data, config_file, indent=4)

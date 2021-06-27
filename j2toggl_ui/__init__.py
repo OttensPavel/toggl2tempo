@@ -8,7 +8,7 @@ from loguru import logger
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMessageBox
 
-from j2toggl_core.app_paths import get_user_file_path
+from j2toggl_core.app_paths import get_app_file_path
 from j2toggl_core.configuration.json_config import JsonConfig
 from j2toggl_ui.main_window import MainWindow
 from j2toggl_ui.resources.resouces import qInitCommonResources
@@ -38,7 +38,7 @@ def start_ui():
     file_log_format = "{time:YYYY-MM-DD HH:mm:ss.SSS}"\
         + "| {level: <8} | {name} | {message} | {exception}"
 
-    log_file_path = get_user_file_path("j2toggl.log")
+    log_file_path = get_app_file_path("j2toggl.log")
     logger.add(log_file_path, level="DEBUG", format=file_log_format)
 
     # Load common resources
@@ -59,7 +59,7 @@ def start_ui():
         mb = QMessageBox()
         mb.setIcon(QMessageBox.Critical)
         mb.setWindowTitle("Error")
-        mb.setText("Error occurs on load config file: {0}.\n\nPlease see app-config.json.sample for more details.")
+        mb.setText("Error occurs on load config file.\n\nPlease see app-config.json.sample for more details.")
         mb.setDetailedText(msg)
         mb.exec()
 

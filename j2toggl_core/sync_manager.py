@@ -73,12 +73,14 @@ class SyncManager(QObject):
     def _login(self):
         # Login Toggl
         self.changeStatus.emit("Toggl authentication...")
-        self.toggl_client.login()
+        if not self.toggl_client.login():
+            self.changeStatus.emit("Sorry, Toggl authentication failed. Please check log for more details.")
+            return False
 
         # Login JIRA Tempo
         self.changeStatus.emit("JIRA authentication...")
         if not self.tempo_client.login():
-            self.changeStatus.emit("Sorry, authentication failed. Please check log for more details.")
+            self.changeStatus.emit("Sorry, JIRA authentication failed. Please check log for more details.")
             return False
 
         return True

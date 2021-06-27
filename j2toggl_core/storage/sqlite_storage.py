@@ -2,7 +2,7 @@ import sqlite3
 
 from typing import Optional
 
-from j2toggl_core.app_paths import get_user_file_path
+from j2toggl_core.app_paths import get_app_file_path
 from j2toggl_core.storage.storage import StorageBase
 from j2toggl_core.worklog import WorkLog
 
@@ -30,7 +30,7 @@ class SqliteStorage(StorageBase):
             self._conn = None
 
     def open(self):
-        storage_path = get_user_file_path(DATABASE_FILE_NAME)
+        storage_path = get_app_file_path(DATABASE_FILE_NAME)
 
         db_exists = storage_path.exists() and storage_path.is_file()
         self._conn = sqlite3.connect(str(storage_path))

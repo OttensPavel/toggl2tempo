@@ -28,6 +28,11 @@ class TempoClient(JiraClient):
 
         self.__config = tempo_config
         self.__session = requests.Session()
+
+    def login(self) -> bool:
+        if not super().login():
+            return False
+
         self.__session.headers["Authorization"] = "Bearer " + self.__config.token
 
     def get_worklogs(self, start_date: datetime, end_date: datetime) -> WorkLogCollection:

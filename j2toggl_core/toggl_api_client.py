@@ -39,12 +39,19 @@ class TogglClient:
         self._session = requests.Session()
         self._session.auth = (self._config.token, "api_token")
 
-    def login(self):
+    def login(self) -> bool:
+        if not self._config.validate():
+            return False
+
         method_uri = self.__make_api_uri("workspaces")
         r = self._session.get(url=method_uri)
+        if not r.ok:
+            return False
 
         workspaces = r.json()
         self._workspace_id = workspaces[0]["id"]
+
+        return True
 
     def get_detailed_report(self, start_date: datetime, end_date: datetime = None) -> WorkLogCollection:
         if end_date is None:

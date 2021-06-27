@@ -4,7 +4,7 @@ import platform
 from pathlib import Path
 
 
-def get_user_file_path(file_path: str) -> Path:
+def get_app_directory_path() -> Path:
     if platform.system().lower() == "windows":
         home_dir = os.getenv('APPDATA')
         if not home_dir:
@@ -12,6 +12,10 @@ def get_user_file_path(file_path: str) -> Path:
     else:
         raise OSError(f"Sorry, {platform.system()} isn't supported.")
 
-    user_file_path = Path(home_dir).joinpath("toggl2tempo", file_path)
+    return Path(home_dir).joinpath("toggl2tempo")
 
-    return user_file_path
+
+def get_app_file_path(file_path: str) -> Path:
+    app_dir = get_app_directory_path()
+
+    return app_dir.joinpath(file_path)
