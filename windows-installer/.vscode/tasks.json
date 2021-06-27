@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "makensis",
+      "args": [
+        "/V4",
+        "${file}"
+      ],
+      "group": "build"
+    },
+    {
+      "label": "Build (strict)",
+      "type": "shell",
+      "command": "makensis",
+      "args": [
+        "/V4",
+        "/WX",
+        "${file}"
+      ],
+      "group": "build"
+
+    }
+  ]
+}

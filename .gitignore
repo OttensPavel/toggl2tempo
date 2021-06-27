@@ -1,0 +1,20 @@
+﻿# Virtual env directory
+venv/
+
+# IDE artefacts
+.idea
+
+
+# Different artefacts of a distribute package creation process
+build/
+dist/
+*.egg-info
+
+# Common artefacts
+__pycache__
+*.cookies
+*.log
+
+# Application artefacts
+app-config.json
+*.db
