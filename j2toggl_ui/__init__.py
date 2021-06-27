@@ -46,6 +46,7 @@ def start_ui():
 
     # Create app
     app = QApplication(sys.argv)
+    app.setStyle("Fusion")
 
     # Load config
     config = JsonConfig()
