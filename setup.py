@@ -75,7 +75,7 @@ setup(
     python_requires=REQUIRES_PYTHON,
     url=URL,
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
-    include_package_data = True,
+    include_package_data=True,
     install_requires=REQUIRED,
     entry_points=ENTRY_POINTS,
     license='GPLv3',

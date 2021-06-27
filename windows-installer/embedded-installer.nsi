@@ -6,6 +6,7 @@ Unicode true
 !define /file VERSION ..\version
 
 RequestExecutionLevel user
+SetCompressor /SOLID lzma
 
 InstallDir "$LOCALAPPDATA\${APPNAME}"
 LicenseData "..\LICENSE"

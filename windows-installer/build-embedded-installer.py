@@ -4,17 +4,29 @@ import hashlib
 import os
 import shutil
 import subprocess
+import sys
 import urllib.request
 import zipfile
 
 from contextlib import contextmanager
 from pathlib import Path
+from typing import List
 
 """ This script is based on following articles:
 * https://dev.to/fpim/setting-up-python-s-windows-embeddable-distribution-properly-1081
 * https://docs.python.org/3.6/using/windows.html#finding-modules
 * https://docs.python.org/3.8/using/windows.html#windows-embeddable
 """
+
+source_dir = Path("..")
+
+env_dir = source_dir.joinpath("venv", "Scripts")
+python_path = str(env_dir.joinpath("python.exe").resolve())
+pip_path = str(env_dir.joinpath("pip.exe").resolve())
+
+dist_dir = source_dir.joinpath("dist")
+package_dir = dist_dir.joinpath("package")
+libs_dir = package_dir.joinpath("libs")
 
 
 @contextmanager
@@ -27,18 +39,72 @@ def pushd(new_dir):
         os.chdir(previous_dir)
 
 
+def cleanup_packages():
+    packages_bin = libs_dir.joinpath("bin")
+    if packages_bin.exists():
+        shutil.rmtree(packages_bin)
+
+    for cache_dir in package_dir.rglob("__pycache__"):
+        shutil.rmtree(cache_dir)
+
+
+def trim_qt5_libraries():
+    pyqt5_dir = libs_dir.joinpath("PyQt5")
+
+    qt5_libs_dir = pyqt5_dir.joinpath("Qt5")
+    if not qt5_libs_dir.exists():
+        print(f"Couldn't find PyQt5 libraries by path '{qt5_libs_dir}'", file=sys.stderr)
+        exit(1)
+
+    # We don't use translations now
+    translations_dir = qt5_libs_dir.joinpath("translations")
+    if translations_dir.exists():
+        shutil.rmtree(translations_dir)
+
+    # Qml
+    remove_nested_objects(
+        qt5_libs_dir.joinpath("qml"),
+        exclude_names=["Qt", "QtQml"])
+
+    # Plugins
+    remove_nested_objects(
+        qt5_libs_dir.joinpath("plugins"),
+        exclude_names=["generic", "geometryloaders", "iconengines", "imageformats", "platforms",
+                       "platformthemes", "renderers", "sceneparsers", "styles"])
+
+    # Main libs
+    qt5_bin_path = qt5_libs_dir.joinpath("bin")
+    remove_nested_objects(
+        qt5_bin_path,
+        exclude_names=["Qt5Core.dll", "Qt5Designer.dll", "Qt5Gui.dll", "Qt5QmlModels.dll",
+                       "Qt5Widgets.dll", "Qt5WinExtras.dll", "Qt5Xml.dll"],
+        pattern="Qt5*.dll")
+
+    # Very large OpenGL lib
+    opengl32sw_path = qt5_bin_path.joinpath("opengl32sw.dll")
+    opengl32sw_path.unlink(missing_ok=True)
+
+    # Pyd and Pyi files
+    remove_nested_objects(
+        pyqt5_dir,
+        exclude_names=["QtCore.pyd", "QtDesigner.pyd", "QtGui.pyd", "QtQmlModels.pyd",
+                       "QtWidgets.pyd", "QtWinExtras.pyd", "QtXml.pyd"],
+        pattern="Qt*.pyd")
+
+    remove_nested_objects(pyqt5_dir, exclude_names=[], pattern="*.pyi")
+
+
+def remove_nested_objects(root_dir_path: Path, exclude_names: List[str], pattern: str = "*"):
+    paths_to_remove = list(filter(lambda ptr: ptr.name not in exclude_names, root_dir_path.glob(pattern)))
+    for p in paths_to_remove:
+        if p.is_dir():
+            shutil.rmtree(p)
+        elif p.is_file():
+            p.unlink()
+
+
 # Variables
 app_name = "toggl2tempo"
-
-source_dir = Path("..")
-
-env_dir = source_dir.joinpath("venv", "Scripts")
-python_path = str(env_dir.joinpath("python.exe").resolve())
-pip_path = str(env_dir.joinpath("pip.exe").resolve())
-
-dist_dir = source_dir.joinpath("dist")
-package_dir = dist_dir.joinpath("package")
-libs_dir = package_dir.joinpath("libs")
 
 python_embedded_version = "python38"
 python_embedded_file_name = "python-3.8.10-embed-amd64.zip"
@@ -137,6 +203,10 @@ pip_process = subprocess.run([pip_path, 'install', "-t", libs_dir, wheel_package
                              universal_newlines=True)
 if pip_process.returncode != 0:
     exit(pip_process.returncode)
+
+# == Remove unused parts of Qt5
+cleanup_packages()
+trim_qt5_libraries()
 
 # Copy main script
 shutil.copy(source_dir.joinpath("main.py"), package_dir.joinpath(f"{app_name}.py"))
