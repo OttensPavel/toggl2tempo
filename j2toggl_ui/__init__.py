@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import QMessageBox
 from j2toggl_core.app_paths import get_user_file_path
 from j2toggl_core.configuration.json_config import JsonConfig
 from j2toggl_ui.main_window import MainWindow
+from j2toggl_ui.resources.resouces import qInitCommonResources
 
 
 def handle_exception(exc_type, exc_value, exc_traceback):
@@ -39,6 +40,9 @@ def start_ui():
 
     log_file_path = get_user_file_path("j2toggl.log")
     logger.add(log_file_path, level="DEBUG", format=file_log_format)
+
+    # Load common resources
+    qInitCommonResources()
 
     # Create app
     app = QApplication(sys.argv)

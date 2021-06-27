@@ -657,8 +657,10 @@ else:
     rcc_version = 2
     qt_resource_struct = qt_resource_struct_v2
 
-def qInitResources():
+
+def qInitCommonResources():
     QtCore.qRegisterResourceData(rcc_version, qt_resource_struct, qt_resource_name, qt_resource_data)
 
-def qCleanupResources():
+
+def qCleanupCommonResources():
     QtCore.qUnregisterResourceData(rcc_version, qt_resource_struct, qt_resource_name, qt_resource_data)

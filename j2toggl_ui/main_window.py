@@ -10,7 +10,6 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayo
 from j2toggl_core.configuration.config import Config
 from j2toggl_core.sync_manager import SyncManager
 from j2toggl_core.worklog import WorkLog
-from j2toggl_ui.resouces import qInitResources
 from j2toggl_ui.sync_thread import SyncThread
 from j2toggl_ui.worklogs_table_widget import WorkLogsTableWidget
 
@@ -20,8 +19,6 @@ WorkLogCollection = List[WorkLog]
 class MainWindow(QWidget):
     def __init__(self, config: Config):
         super().__init__()
-
-        qInitResources()
 
         self.config = config
 
