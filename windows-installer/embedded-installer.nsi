@@ -42,7 +42,7 @@ section "install"
 
     # Start Menu
     CreateShortCut "$SMPROGRAMS\${APPNAME}.lnk" "$INSTDIR\pythonw.exe" "${APPNAME}.py" "$INSTDIR\app-icon.ico"
-    CreateShortCut "$SMPROGRAMS\${APPNAME} - Debug.lnk" "$INSTDIR\python.exe" "${APPNAME}.py" "$INSTDIR\app-icon.ico"
+    CreateShortCut "$SMPROGRAMS\${APPNAME} - Debug.lnk" "cmd" "/K $INSTDIR\python.exe ${APPNAME}.py" "$INSTDIR\app-icon.ico"
 
     # Uninstaller - See function un.onInit and section "uninstall" for configuration
     WriteUninstaller "$INSTDIR\uninstall.exe"
