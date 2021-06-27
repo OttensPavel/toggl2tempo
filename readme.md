@@ -8,7 +8,7 @@ Toggl2Tempo is a desktop application to sync work logs between Toggl and JIRA Te
 
 **ATTENTION!** Windows x32 doesn't support.
 
-[Download](https://bitbucket.org/togglsync_team/toggl-sync/downloads/) and install last version of toggl2tempo.
+[Download](https://github.com/OttensPavel/toggl2tempo/releases) and install last release of toggl2tempo.
 
 ### On Linux: 
 TODO: Coming soon 
@@ -19,8 +19,8 @@ But all settings, which you need, aren't changed usually therefore you should se
 
 ### JIRA
 There are following settings:
-* host: host of your Cloud JIRA instanse, for exampls: _https://cloud.atlassian.net_
-* user: email which you use to login in JIRA, for example: _myname@cloud.atlassian.net_
+* host: host of your Cloud JIRA instance, for examples: _https://cloud.atlassian.net_
+* user: email which you use to log in JIRA, for example: _myname@cloud.atlassian.net_
 * token: JIRA API token, - please see below.
 
 #### Create an API token
