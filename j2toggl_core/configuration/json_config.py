@@ -44,7 +44,6 @@ class JsonConfig(Config):
             "toggl": {
                 "type": "object",
                 "properties": {
-                    "host": {"type": "string"},
                     "user_agent": {"type": "string"},
                     "token": {"type": "string"},
                 }
@@ -85,6 +84,5 @@ class JsonConfig(Config):
             self.tempo.token = data["tempo"]["token"]
 
             # Toggl settings
-            self.toggl.host = data["toggl"]["host"]
             self.toggl.token = data["toggl"]["token"]
             self.toggl.user_agent = data["toggl"]["user_agent"]

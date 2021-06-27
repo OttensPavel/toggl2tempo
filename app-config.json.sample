@@ -11,7 +11,6 @@
         "token": "1Ahvn1jMR6FoRbWs5AX0a7ZVu56qg0Ur"
     },
     "toggl": {
-        "host": "https://www.toggl.com",
         "user_agent": "your-email@example.com",
         "token": "hjhs87y4ht4h7y179y4"
     }
