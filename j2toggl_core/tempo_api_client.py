@@ -35,6 +35,8 @@ class TempoClient(JiraClient):
 
         self.__session.headers["Authorization"] = "Bearer " + self.__config.token
 
+        return True
+
     def get_worklogs(self, start_date: datetime, end_date: datetime) -> WorkLogCollection:
         method_uri = self.__make_tempo_api_uri(f"worklogs/user/{self._user.account_id}")
 
