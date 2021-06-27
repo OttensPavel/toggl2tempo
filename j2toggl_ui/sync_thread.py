@@ -11,9 +11,6 @@ class SyncThread(QThread):
         self.end_date = None
         self.only_load = False
 
-    def __del__(self):
-        self.wait()
-
     def set_parameters(self, start_date: date, end_date: date, only_load: bool = False):
         self.start_date = start_date
         self.end_date = end_date
