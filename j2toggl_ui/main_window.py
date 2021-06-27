@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayo
 from j2toggl_core.configuration.config import Config
 from j2toggl_core.sync_manager import SyncManager
 from j2toggl_core.worklog import WorkLog
+from j2toggl_ui.settings.settings_window import SettingsWindow
 from j2toggl_ui.sync_thread import SyncThread
 from j2toggl_ui.worklogs_table_widget import WorkLogsTableWidget
 
@@ -51,6 +52,8 @@ class MainWindow(QWidget):
         self.endDatePicker.setDisplayFormat("dd.MM.yyyy")
         self.endDatePicker.calendarWidget().setFirstDayOfWeek(self.config.first_date_of_week)
 
+        self.settings_button = QPushButton("Settings")
+
         self.wlList = WorkLogsTableWidget()
 
         self.statusBar = QStatusBar()
@@ -61,6 +64,7 @@ class MainWindow(QWidget):
         datesHBox.addWidget(QLabel("Period to sync: "))
         datesHBox.addWidget(self.startDatePicker)
         datesHBox.addWidget(self.endDatePicker)
+        datesHBox.addWidget(self.settings_button)
 
         mainVBox = QVBoxLayout()
         mainVBox.addLayout(datesHBox)
@@ -84,6 +88,7 @@ class MainWindow(QWidget):
         # UI
         self.sync_button.clicked.connect(self._on_sync_click)
         self.load_button.clicked.connect(self._on_load_click)
+        self.settings_button.clicked.connect(self._on_settings_click)
 
         # Thread events
         self._sync_thread.started.connect(self.on_sync_start)
@@ -121,6 +126,13 @@ class MainWindow(QWidget):
 
         self._sync_thread.set_parameters(start_date, end_date, True)
         self._sync_thread.start()
+
+    def _on_settings_click(self):
+        settings_window = SettingsWindow(self.config)
+        settings_window.exec_()
+
+        if settings_window.config_has_changed:
+            self.config.load()
 
     @pyqtSlot(str)
     def change_status(self, msg: str):
