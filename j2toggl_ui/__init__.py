@@ -1,17 +1,18 @@
 #!/usr/bin/python3
 import sys
-import os
 import traceback
 
 from loguru import logger
 
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QDialog
 from PyQt5.QtWidgets import QMessageBox
 
 from j2toggl_core.app_paths import get_app_file_path
 from j2toggl_core.configuration.json_config import JsonConfig
+from j2toggl_core.import_manager import ImportManager
 from j2toggl_ui.main_window import MainWindow
 from j2toggl_ui.resources.resouces import qInitCommonResources
+from j2toggl_ui.startup_wizard.wizard import StartupWizard
 
 
 def handle_exception(exc_type, exc_value, exc_traceback):
@@ -50,6 +51,23 @@ def start_ui():
 
     # Load config
     config = JsonConfig()
+
+    show_configuration_ui: bool = False
+
+    if not config.exists():
+        wizard = StartupWizard()
+        wizard.exec_()
+
+        result = wizard.result()
+        if result != QDialog.Accepted:
+            exit(0)
+
+        if wizard.import_path is not None:
+            imp_manager = ImportManager(wizard.import_path)
+            imp_manager.import_artifacts()
+        else:
+            show_configuration_ui = True
+
     try:
         config.load()
     except Exception as configLoadError:
@@ -67,7 +85,7 @@ def start_ui():
     if not init_successful:
         exit(1)
 
-    main_ui_window = MainWindow(config)
+    main_ui_window = MainWindow(config, show_configuration_ui)
     main_ui_window.show()
 
     sys.excepthook = handle_exception

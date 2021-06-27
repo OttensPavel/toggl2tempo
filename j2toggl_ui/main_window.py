@@ -1,5 +1,6 @@
 from typing import List
 
+from PyQt5 import QtGui
 from PyQt5.QtCore import QDate, pyqtSlot
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDateEdit
@@ -18,10 +19,11 @@ WorkLogCollection = List[WorkLog]
 
 
 class MainWindow(QWidget):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, run_configuration_ui: bool = False):
         super().__init__()
 
-        self.config = config
+        self._config = config
+        self._run_configuration_ui = run_configuration_ui
 
         self._sync_manager = SyncManager(config)
         self._sync_thread = SyncThread(self._sync_manager)
@@ -45,12 +47,12 @@ class MainWindow(QWidget):
         self.startDatePicker = QDateEdit()
         self.startDatePicker.setCalendarPopup(True)
         self.startDatePicker.setDisplayFormat("dd.MM.yyyy")
-        self.startDatePicker.calendarWidget().setFirstDayOfWeek(self.config.first_date_of_week)
+        self.startDatePicker.calendarWidget().setFirstDayOfWeek(self._config.first_date_of_week)
 
         self.endDatePicker = QDateEdit()
         self.endDatePicker.setCalendarPopup(True)
         self.endDatePicker.setDisplayFormat("dd.MM.yyyy")
-        self.endDatePicker.calendarWidget().setFirstDayOfWeek(self.config.first_date_of_week)
+        self.endDatePicker.calendarWidget().setFirstDayOfWeek(self._config.first_date_of_week)
 
         self.settings_button = QPushButton("Settings")
 
@@ -128,11 +130,16 @@ class MainWindow(QWidget):
         self._sync_thread.start()
 
     def _on_settings_click(self):
-        settings_window = SettingsWindow(self.config)
+        settings_window = SettingsWindow(self._config)
         settings_window.exec_()
 
         if settings_window.config_has_changed:
-            self.config.load()
+            self._config.load()
+
+    def showEvent(self, event: QtGui.QShowEvent) -> None:
+        if self._run_configuration_ui:
+            self._run_configuration_ui = False
+            self._on_settings_click()
 
     @pyqtSlot(str)
     def change_status(self, msg: str):
