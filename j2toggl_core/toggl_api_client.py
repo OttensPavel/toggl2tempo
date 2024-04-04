@@ -145,7 +145,7 @@ class TogglClient:
             wl.activity = "Other"
 
     def __make_reports_api_url(self, relative_url: str):
-        return "{0}//reports/api/v2/{1}".format(self.__toggl_url, relative_url)
+        return "{0}/reports/api/v2/{1}".format(self.__toggl_url, relative_url)
 
     def __make_api_uri(self, relative_url: str):
-        return "{0}/api/v8/{1}".format(self.__toggl_url, relative_url)
+        return "{0}/api/v9/{1}".format(self.__toggl_url, relative_url)
