@@ -106,10 +106,10 @@ def remove_nested_objects(root_dir_path: Path, exclude_names: List[str], pattern
 # Variables
 app_name = "toggl2tempo"
 
-python_embedded_version = "python38"
-python_embedded_file_name = "python-3.8.10-embed-amd64.zip"
-python_embedded_file_hash_sum = "abbe314e9b41603dde0a823b76f5bbbe17b3de3e5ac4ef06b759da5466711271"
-python_embedded_url = "https://www.python.org/ftp/python/3.8.10/python-3.8.10-embed-amd64.zip"
+python_embedded_version = "python310"
+python_embedded_file_name = "python-3.10.10-embed-amd64.zip"
+python_embedded_file_hash_sum = "b8c99a1bce379287eae580e7ecd0d8f4afdce0a27268d7f26db205f3362d7bab"
+python_embedded_url = "https://www.python.org/ftp/python/3.10.10/python-3.10.10-embed-amd64.zip"
 python_embedded_file_path = dist_dir.joinpath(python_embedded_file_name)
 
 # === Read version ===

@@ -3,7 +3,7 @@
 !define APPNAME "toggl2tempo"
 !define DESCRIPTION "Desktop application to sync work logs between Toggl and JIRA Tempo."
 
-!define PYTHON_VER "3.8"
+!define PYTHON_VER "3.10"
 !define WHEEL_FILE "${APPNAME}-${VERSION}-py3-none-any.whl"
 !define ABOUTURL  "https://bitbucket.org/togglsync_team/toggl-sync/src/master/"
 
