@@ -40,7 +40,7 @@ REQUIRED = [
     "requests >= 2.12.4,<3.0",
     "sip >=5.1.1",
     "tzlocal >=2.1,<3.0",
-    "loguru >=0.5.0,<0.6.0",
+    "loguru >=0.7.2,<0.8.0",
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -83,6 +83,6 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8'
+        'Programming Language :: Python :: 3.10'
     ]
 )
