@@ -13,7 +13,7 @@ Unicode true
 RequestExecutionLevel admin # Require admin rights on NT6+ (When UAC is turned on)
 
 InstallDir "$LOCALAPPDATA\${APPNAME}"
-LicenseData "..\license.txt"
+LicenseData "..\LICENSE"
 
 Name "${APPNAME} v${VERSION}"
 Icon "app-icon.ico"
@@ -109,7 +109,7 @@ section "toggl2tempo"
     SetOutPath $INSTDIR
 
     # Files added here should be removed by the uninstaller (see section "uninstall")
-    File "..\license.txt"
+    File "..\LICENSE"
     File "..\dist\${WHEEL_FILE}"
     File /oname=logo.ico ".\app-icon.ico"
 
