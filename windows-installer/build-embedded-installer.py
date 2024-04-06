@@ -189,7 +189,7 @@ import site
 # === Build wheel distribution package ===
 print("Build Wheel distribution packages ...")
 with pushd(source_dir):
-    bdist_process = subprocess.run([python_path, 'setup.py', "sdist", "bdist_wheel", "--embedded"],
+    bdist_process = subprocess.run([python_path, '-m', "build", "--wheel"],
                                    stdout=subprocess.PIPE,
                                    universal_newlines=True)
     if bdist_process.returncode != 0:
